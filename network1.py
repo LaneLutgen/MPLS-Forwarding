@@ -24,14 +24,32 @@ class Interface:
     def get(self, in_or_out):
         try:
             if in_or_out == 'in':
+                size = self.in_queue.qsize()
+                for i in range(0, size):
+                    pkt_S = self.in_queue.get(False)
+                    if pkt_S is not None:
+                        p = NetworkPacket.from_byte_S(pkt_S)
+                        if p.priority_S == '1':
+                            return pkt_S
+                        else: 
+                            self.in_queue.put_nowait(pkt_S)
+                
+                #If all packets have priority 0, then forward the head of the queue    
                 pkt_S = self.in_queue.get(False)
-#                 if pkt_S is not None:
-#                     print('getting packet from the IN queue')
                 return pkt_S
             else:
+                size = self.out_queue.qsize()
+                for i in range(0, size):
+                    pkt_S = self.out_queue.get(False)
+                    if pkt_S is not None:
+                        p = NetworkPacket.from_byte_S(pkt_S)
+                        if p.priority_S == '1':
+                            return pkt_S
+                        else: 
+                            self.out_queue.put_nowait(pkt_S)
+                
+                #If all packets have priority 0, then forward the head of the queue    
                 pkt_S = self.out_queue.get(False)
-#                 if pkt_S is not None:
-#                     print('getting packet from the OUT queue')
                 return pkt_S
         except queue.Empty:
             return None
@@ -42,10 +60,10 @@ class Interface:
     # @param block - if True, block until room in queue, if False may throw queue.Full exception
     def put(self, pkt, in_or_out, block=False):
         if in_or_out == 'out':
-#             print('putting packet in the OUT queue')
+            #print('putting packet in the OUT queue')
             self.out_queue.put(pkt, block)
         else:
-#             print('putting packet in the IN queue')
+            #print('putting packet in the IN queue')
             self.in_queue.put(pkt, block)
             
         
