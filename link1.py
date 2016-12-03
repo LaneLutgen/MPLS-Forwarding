@@ -43,19 +43,20 @@ class Link:
                     intf_b.put(pkt_S, 'in')
                     #update the next free time of the inteface according to serialization delay
                     pkt_size = len(pkt_S)*8 #assuming each characted is 8 bits
-                    intf_a.next_avail_time = time.time() + pkt_size/intf_a.capacity                
+                    intf_a.next_avail_time = time.time() + pkt_size/intf_a.capacity  
+                                  
                     print('%s: transmitting packet "%s" on %s %s -> %s, %s \n' \
                           ' - seconds until the next available time %f\n' \
-                          ' - queue size %d\n' \
-                          % (self, pkt_S, node_a, node_a_intf, node_b, node_b_intf, intf_a.next_avail_time - time.time(), intf_a.out_queue.qsize()))
+                          ' - queue size %d: priority 0: %d packets, priority 1: %d packets\n' \
+                          % (self, pkt_S, node_a, node_a_intf, node_b, node_b_intf, intf_a.next_avail_time - time.time(), 
+                             intf_a.out_queue.qsize(), intf_a.get_out_queue_priority_count(0), intf_a.get_out_queue_priority_count(1)))
                 # uncomment the lines below to see waiting time until next transmission
 #                 else:
 #                     print('%s: waiting to transmit packet on %s %s -> %s, %s for another %f milliseconds' % (self, node_a, node_a_intf, node_b, node_b_intf, intf_a.next_avail_time - time.time()))    
             except queue.Full:
                 print('%s: packet lost' % (self))
                 pass
-        
-        
+      
 ## An abstraction of the link layer
 class LinkLayer:
     

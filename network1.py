@@ -66,7 +66,29 @@ class Interface:
             #print('putting packet in the IN queue')
             self.in_queue.put(pkt, block)
             
-        
+    
+    def get_out_queue_priority_count(self, priority):
+        count = 0
+        size = self.out_queue.qsize()
+        if priority == 1:
+            for i in range(0, size):
+                pkt_S = self.out_queue.get(False)
+                if pkt_S is not None:
+                    p = NetworkPacket.from_byte_S(pkt_S)
+                    if p.priority_S == '1':
+                        count = count + 1
+                    self.out_queue.put_nowait(pkt_S)
+            return count
+        elif priority == 0:
+            for i in range(0, size):
+                pkt_S = self.out_queue.get(False)
+                if pkt_S is not None:
+                    p = NetworkPacket.from_byte_S(pkt_S)
+                    if p.priority_S == '0':
+                        count = count + 1
+                    self.out_queue.put_nowait(pkt_S)
+            return count
+         
 ## Implements a network layer packet (different from the RDT packet 
 # from programming assignment 2).
 # NOTE: This class will need to be extended to for the packet to include
