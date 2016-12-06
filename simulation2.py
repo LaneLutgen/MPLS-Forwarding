@@ -19,7 +19,9 @@ if __name__ == '__main__':
     #create network hosts
     client = network2.Host(1)
     object_L.append(client)
-    server = network2.Host(2)
+    client2 = network2.Host(2)
+    object_L.append(client2)
+    server = network2.Host(3)
     object_L.append(server)
     
     #create routers and routing tables for connected clients (subnets)
@@ -37,15 +39,33 @@ if __name__ == '__main__':
                               rt_tbl_D = router_b_rt_tbl_D, 
                               max_queue_size=router_queue_size)
     object_L.append(router_b)
+    router_c_rt_tbl_D = {}
+    router_c = network2.Router(name='C', 
+                              intf_cost_L=[1,3], 
+                              intf_capacity_L=[500,100],
+                              rt_tbl_D = router_c_rt_tbl_D, 
+                              max_queue_size=router_queue_size)
+    object_L.append(router_c)
+    router_d_rt_tbl_D = {}
+    router_d = network2.Router(name='D', 
+                              intf_cost_L=[1,3], 
+                              intf_capacity_L=[500,100],
+                              rt_tbl_D = router_d_rt_tbl_D, 
+                              max_queue_size=router_queue_size)
+    object_L.append(router_d)
     
     #create a Link Layer to keep track of links between network nodes
     link_layer = link2.LinkLayer()
     object_L.append(link_layer)
     
     #add all the links
-    link_layer.add_link(link2.Link(client, 0, router_a, 0))
-    link_layer.add_link(link2.Link(router_a, 1, router_b, 0))
-    link_layer.add_link(link2.Link(router_b, 1, server, 0))
+    link_layer.add_link(link2.Link(client, 0, router_a, 0)) #1 to a
+    link_layer.add_link(link2.Link(client2, 0, router_a, 0)) #2 to a
+    link_layer.add_link(link2.Link(router_a, 1, router_b, 0)) #a to b
+    link_layer.add_link(link2.Link(router_a, 1, router_c, 0)) #a to c
+    link_layer.add_link(link2.Link(router_b, 1, router_d, 0)) #b to d
+    link_layer.add_link(link2.Link(router_c, 1, router_d, 0)) #c to d    
+    link_layer.add_link(link2.Link(router_d, 1, server, 0))
     
     
     #start all the objects

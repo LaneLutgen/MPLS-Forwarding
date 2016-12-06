@@ -88,7 +88,35 @@ class Interface:
                         count = count + 1
                     self.out_queue.put_nowait(pkt_S)
             return count
-         
+
+#Class for encapsulating NetworkPackets
+#Contains the label field and the encapsulated Network packet
+class MPLSFrame:
+    
+    label_length = 20
+    
+    #Will contain a label and the network packet
+    def __init__(self, label, network_packet):
+        self.label = label
+        self.network_packet = network_packet
+        
+    def __str__(self):
+        return self.to_byte_S()
+        
+    ## convert packet to a byte string for transmission over links
+    def to_byte_S(self):
+        byte_S = str(self.label).zfill(self.label_length)
+        byte_S += self.network_packet.to_byte_S()
+        return byte_S
+    
+    ## extract a packet object from a byte string
+    # @param byte_S: byte string representation of the packet
+    @classmethod
+    def from_byte_S(self, byte_S):
+        label = int(byte_S[0 : MPLSFrame.label_length])
+        network_packet = NetworkPacket.from_byte_S(byte_S[MPLSFrame.label_length :])      
+        return self(label, network_packet)    
+     
 ## Implements a network layer packet (different from the RDT packet 
 # from programming assignment 2).
 # NOTE: This class will need to be extended to for the packet to include
