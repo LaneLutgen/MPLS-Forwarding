@@ -247,7 +247,7 @@ class Router:
             pkt_S = self.intf_L[i].get('in')
             #if packet exists make a forwarding decision
             if pkt_S is not None:
-                p = MPLSFrame.from_byte_S(pkt_S) #parse a packet out
+                p = NetworkPacket.from_byte_S(pkt_S) #parse a packet out
                 if p.prot_S == 'data':
                     self.forward_packet(p,i)
                 elif p.prot_S == 'control':
@@ -263,8 +263,9 @@ class Router:
             # TODO: Here you will need to implement a lookup into the 
             # forwarding table to find the appropriate outgoing interface
             # for now we assume the outgoing interface is (i+1)%2
-            self.intf_L[(i+1)%2].put(p.to_byte_S(), 'out', True)
-            print('%s: forwarding packet "%s" from interface %d to %d' % (self, p, i, (i+1)%2))
+            j = self.rt_tbl_D['out_intf'][i]
+            self.intf_L[j].put(p.to_byte_S(), 'out', True)
+            print('%s: forwarding packet "%s" from interface %d to %d' % (self, p, i, j)
         except queue.Full:
             print('%s: packet "%s" lost on interface %d' % (self, p, i))
             pass
