@@ -247,7 +247,7 @@ class Router:
             pkt_S = self.intf_L[i].get('in')
             #if packet exists make a forwarding decision
             if pkt_S is not None:
-                p = NetworkPacket.from_byte_S(pkt_S) #parse a packet out
+                p = MPLSFrame.from_byte_S(pkt_S) #parse a packet out
                 if p.prot_S == 'data':
                     self.forward_packet(p,i)
                 elif p.prot_S == 'control':
