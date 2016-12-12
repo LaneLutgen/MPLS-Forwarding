@@ -26,20 +26,20 @@ if __name__ == '__main__':
     
     #create routers and routing tables for connected clients (subnets)
     router_a_rt_tbl_D = {} # packet to host 1 through interface 0 for cost 1
-    router_a_rt_tbl_D['in_label'] = [12, 14]
+    router_a_rt_tbl_D['in_label'] = [-1, -2]
     router_a_rt_tbl_D['out_label'] = [8, 10]
-    router_a_rt_tbl_D['in_intf'] = [2, 1]
-    router_a_rt_tbl_D['out_intf'] = [4, 3]
+    router_a_rt_tbl_D['in_intf'] = [1, 0]
+    router_a_rt_tbl_D['out_intf'] = [3, 2]
     router_a = network2.Router(name='A', 
-                              intf_cost_L=[1,1], 
-                              intf_capacity_L=[500,500],
+                              intf_cost_L=[1,1,1,1], 
+                              intf_capacity_L=[500,500,500,500],
                               rt_tbl_D = router_a_rt_tbl_D, 
                               max_queue_size=router_queue_size)
     object_L.append(router_a)
     router_b_rt_tbl_D = {} # packet to host 2 through interface 1 for cost 3
     router_b_rt_tbl_D['in_label'] = [10]
     router_b_rt_tbl_D['out_label'] = [6]
-    router_b_rt_tbl_D['in_intf'] = [3]
+    router_b_rt_tbl_D['in_intf'] = [0]
     router_b_rt_tbl_D['out_intf'] = [1]
     router_b = network2.Router(name='B', 
                               intf_cost_L=[1,3], 
@@ -50,8 +50,8 @@ if __name__ == '__main__':
     router_c_rt_tbl_D = {}
     router_c_rt_tbl_D['in_label'] = [8]
     router_c_rt_tbl_D['out_label'] = [6]
-    router_c_rt_tbl_D['in_intf'] = [4]
-    router_c_rt_tbl_D['out_intf'] = [2]
+    router_c_rt_tbl_D['in_intf'] = [0]
+    router_c_rt_tbl_D['out_intf'] = [1]
     router_c = network2.Router(name='C', 
                               intf_cost_L=[1,3], 
                               intf_capacity_L=[500,100],
@@ -60,12 +60,12 @@ if __name__ == '__main__':
     object_L.append(router_c)
     router_d_rt_tbl_D = {}
     router_d_rt_tbl_D['in_label'] = [6, 6]
-    router_d_rt_tbl_D['out_label'] = []
-    router_d_rt_tbl_D['in_intf'] = [1, 2]
-    router_d_rt_tbl_D['out_intf'] = [3, 3]
+    router_d_rt_tbl_D['out_label'] = [-1, -1]
+    router_d_rt_tbl_D['in_intf'] = [0, 1]
+    router_d_rt_tbl_D['out_intf'] = [2, 2]
     router_d = network2.Router(name='D', 
-                              intf_cost_L=[1,3], 
-                              intf_capacity_L=[500,100],
+                              intf_cost_L=[1,3,1], 
+                              intf_capacity_L=[500,100,500],
                               rt_tbl_D = router_d_rt_tbl_D, 
                               max_queue_size=router_queue_size)
     object_L.append(router_d)
