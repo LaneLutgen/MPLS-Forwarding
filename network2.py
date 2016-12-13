@@ -164,7 +164,7 @@ class NetworkPacket:
         elif prot_S == '2':
             prot_S = 'control'
         else:
-            raise('%s: unknown prot_S field: %s' %(self, prot_S))
+            prot_S = 'data'
         priority_S = byte_S[NetworkPacket.dst_addr_S_length + NetworkPacket.prot_S_length: NetworkPacket.dst_addr_S_length + NetworkPacket.prot_S_length + NetworkPacket.priority_S_length]
         data_S = byte_S[NetworkPacket.dst_addr_S_length + NetworkPacket.prot_S_length + NetworkPacket.priority_S_length : ]        
         return self(dst_addr, prot_S, data_S, priority_S)
