@@ -93,10 +93,15 @@ if __name__ == '__main__':
         t.start()
     
     #create some send events    
-    for i in range(5):
+    for i in range(3):
         priority = i%2
         print(priority)
-        client.udt_send(3, 'Sample client data %d' % i, priority)
+        client.udt_send(3, 1, 'From Host 1 Sample %d' % i, priority)
+
+    for i in range(3):
+        priority = i%2
+        print(priority)
+        client2.udt_send(3, 2, 'From Host 2 SAMPLE %d' % i, priority)
         
     #give the network sufficient time to transfer all packets before quitting
     sleep(simulation_time)
