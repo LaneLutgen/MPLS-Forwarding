@@ -277,7 +277,7 @@ class Router:
             j = self.rt_tbl_D['out_intf'][i]
             mp = MPLSFrame(self.rt_tbl_D['out_label'][i], p)
             emp = mp.to_byte_S()
-            self.intf_L[j].put(mp, 'out', True)
+            self.intf_L[j].put(emp, 'out', True)
             print('%s: forwarding packet "%s" from interface %d to %d' % (self, mp, i, j))
         except queue.Full:
             #print('%s: packet "%s" lost on interface %d' % (self, mp, i))
