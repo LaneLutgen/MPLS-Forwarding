@@ -164,6 +164,7 @@ class NetworkPacket:
         elif prot_S == '2':
             prot_S = 'control'
         else:
+            #raise('%s: unknown prot_S field: %s' %(self, prot_S))
             prot_S = 'data'
         priority_S = byte_S[NetworkPacket.dst_addr_S_length + NetworkPacket.prot_S_length: NetworkPacket.dst_addr_S_length + NetworkPacket.prot_S_length + NetworkPacket.priority_S_length]
         data_S = byte_S[NetworkPacket.dst_addr_S_length + NetworkPacket.prot_S_length + NetworkPacket.priority_S_length : ]        
@@ -247,11 +248,12 @@ class Router:
             pkt_S = self.intf_L[i].get('in')
             #if packet exists make a forwarding decision
             if pkt_S is not None:
-                if self.rt_tbl_D['in_label'][i] < 0 or self.rt_tbl_D['out_label'][i] < 0: #If regular packet, used -1 for in_label/out_label to denote that it was coming from a host.
+                if self.rt_tbl_D['in_label'][i] == 0: #If regular packet, used -1 for in_label/out_label to denote that it was coming from a host.
                     p = NetworkPacket.from_byte_S(pkt_S) #parse a packet out
                 else: #If MPLS frame
                     mp = MPLSFrame.from_byte_S(pkt_S) #parse a packet out
                     p = mp.network_packet
+                    #p = NetworkPacket.from_byte_S(mp.network_packet)
                     
                 if p.prot_S == 'data':
                     self.forward_packet(p,i)
@@ -271,13 +273,14 @@ class Router:
             #j = self.rt_tbl_D['out_intf'][i]
             #self.intf_L[j].put(p.to_byte_S(), 'out', True)
             #print('%s: forwarding packet "%s" from interface %d to %d' % (self, p, i, j)
-
+            #or self.rt_tbl_D['out_label'][i] < 0
             j = self.rt_tbl_D['out_intf'][i]
             mp = MPLSFrame(self.rt_tbl_D['out_label'][i], p)
-            self.intf_L[j].put(mp.to_byte_S(), 'out', True)
-            print('%s: forwarding packet "%s" from interface %d to %d' % (self, p, i, j))
+            emp = mp.to_byte_S()
+            self.intf_L[j].put(mp, 'out', True)
+            print('%s: forwarding packet "%s" from interface %d to %d' % (self, mp, i, j))
         except queue.Full:
-            print('%s: packet "%s" lost on interface %d' % (self, p, i))
+            #print('%s: packet "%s" lost on interface %d' % (self, mp, i))
             pass
         
     ## forward the packet according to the routing table
